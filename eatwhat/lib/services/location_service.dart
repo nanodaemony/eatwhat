@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
@@ -6,6 +7,14 @@ import 'package:amap_flutter_location/amap_location_option.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'logger_service.dart';
+
+/// Android Key 配置
+const _androidDebugKey = '15ee4db9898582c0c65ac116d92b18d5';
+const _androidReleaseKey = '2ae92fdbb3c6f8b615b6d0ff483c95a4';
+const _iosKey = 'f8012fb518ecc1cecea2561897cb8cab';
+
+/// 获取当前环境的 Android Key
+String get _androidKey => kReleaseMode ? _androidReleaseKey : _androidDebugKey;
 
 /// 定位结果回调
 typedef LocationCallback = void Function(LatLng? position, String? error);
@@ -46,11 +55,11 @@ class LocationService {
     AMapFlutterLocation.updatePrivacyAgree(true);
     _logger.log('LocationService', '隐私合规声明设置完成');
 
-    // 使用静态方法设置 API Key
-    _logger.log('LocationService', '设置定位 API Key...');
+    // 使用静态方法设置 API Key（根据 DEBUG/Release 模式自动切换）
+    _logger.log('LocationService', '设置定位 API Key... [${kReleaseMode ? "Release" : "Debug"}模式]');
     AMapFlutterLocation.setApiKey(
-      '15ee4db9898582c0c65ac116d92b18d5', // androidKey (debug专用)
-      'f8012fb518ecc1cecea2561897cb8cab', // iosKey
+      _androidKey, // 自动切换 Debug/Release Key
+      _iosKey,
     );
     _logger.log('LocationService', '定位 API Key 设置完成');
     _isInitialized = true;

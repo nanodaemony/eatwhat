@@ -1,8 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_search/amap_flutter_search.dart' as amap_search;
 
 import '../models/restaurant.dart';
 import 'logger_service.dart';
+
+/// Android Key 配置
+const _androidDebugKey = '15ee4db9898582c0c65ac116d92b18d5';
+const _androidReleaseKey = '2ae92fdbb3c6f8b615b6d0ff483c95a4';
+const _iosKey = 'f8012fb518ecc1cecea2561897cb8cab';
+
+/// 获取当前环境的 Android Key
+String get _androidKey => kReleaseMode ? _androidReleaseKey : _androidDebugKey;
 
 /// POI 搜索服务封装
 class PoiSearchService {
@@ -18,11 +27,11 @@ class PoiSearchService {
 
     _logger.log('PoiSearchService', '开始初始化搜索服务...');
 
-    // 设置搜索 SDK 的 API Key
-    _logger.log('PoiSearchService', '设置搜索 API Key...');
+    // 设置搜索 SDK 的 API Key（根据 DEBUG/Release 模式自动切换）
+    _logger.log('PoiSearchService', '设置搜索 API Key... [${kReleaseMode ? "Release" : "Debug"}模式]');
     amap_search.AmapFlutterSearch.setApiKey(
-      '15ee4db9898582c0c65ac116d92b18d5', // androidKey (debug专用)
-      'f8012fb518ecc1cecea2561897cb8cab', // iosKey
+      _androidKey, // 自动切换 Debug/Release Key
+      _iosKey,
     );
     _logger.log('PoiSearchService', '搜索 API Key 设置完成');
 
